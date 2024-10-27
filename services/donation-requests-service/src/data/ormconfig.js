@@ -8,9 +8,9 @@ const ormConfig = {
     password: config.db.password,
     database: config.db.database,
     schema: config.db.schema,
-    synchronize: false,
+    synchronize: config.db.synchorize,
     entities: [
-        "src/domain/models/**.entity{.ts,.js}"
+        "src/domain/entity/**.js",
     ],
     migrations: [
         "src/data/migrations/**.ts"
@@ -18,7 +18,7 @@ const ormConfig = {
     cli: {
         migrationsDir: "src/data/migrations"
     },
-    logging: true
+    logging: config.db.logging
 }
 
 module.exports = { ormConfig };

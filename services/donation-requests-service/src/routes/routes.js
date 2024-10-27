@@ -1,16 +1,23 @@
 const { Router } = require("express");
 const router = Router();
 
+const { body, validationResult } = require("express-validator");
+
 const DonationsRequestsController = require("../controller/donations.controller");
 const donationsRequestsController = new DonationsRequestsController();
 
 router.get("/health", (req, res) => {
-    res.status(200).send({
-        status: "Ok"
-    });
+  res.status(200).send({
+    status: "Ok",
+  });
 });
 
-
-router.post("/init", donationsRequestsController.createDonationRequest);
+router.post(
+  "/process",
+  body("requestId").notEmpty().withMessage("requestId field is required"),
+  body("book").notEmpty().withMessage("book field is required"),
+  body("created_by").notEmpty().withMessage("created_by field is required"),
+  donationsRequestsController.createDonationRequest
+);
 
 module.exports = router;

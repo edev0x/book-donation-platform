@@ -1,10 +1,10 @@
 const EntitySchema = require("typeorm").EntitySchema;
-const DonationRequest = require("../models/DonationRequest");
+const EditorialOrder = require("../models/EditorialOrder");
 
 module.exports = new EntitySchema({
-    name: "DonationRequest",
-    tableName: "donation_requests",
-    target: DonationRequest,
+    name: "EditorialOrders",
+    tableName: "editorial_orders",
+    target: EditorialOrder,
     columns: {
         id: {
             primary: true,
@@ -12,30 +12,37 @@ module.exports = new EntitySchema({
             generated: true
         },
         book_id: {
-            type: "int",
-            name: "book_id",
+            type: "int"
+        },
+        quantity: {
+            type: "int"
         },
         request_date: {
-            type: "date"
+            type: "timestamp"
+        },
+        reception_date: {
+            type: "timestamp"
         },
         state: {
             type: "varchar"
         },
         created_at: {
-            type: "timestamp"
+            type: "timestamp",
+            default: "CURRENT_TIMESTAMP"
         },
         created_by: {
-            type: "varchar"
+            type: "varchar",
+            default: "SYSTEM"
         },
         updated_at: {
-            type: "timestamp"
+            type: "timestamp",
         },
         updated_by: {
             type: "varchar"
         }
     },
     relations: {
-        books: {
+        book: {
             target: "Book",
             type: "many-to-one",
             joinColumn: true,

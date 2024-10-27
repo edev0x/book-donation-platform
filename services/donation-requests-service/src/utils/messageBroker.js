@@ -3,25 +3,22 @@ const config = require("../env").config;
 
 class MessageBroker {
   constructor() {
-    this.connection = null;
     this.channel = null;
   }
 
   async connect() {
     console.info("Connecting to RabbitMQ...");
 
-    setTimeout(async () => {
-      try {
-        this.connection = await amqp.connect(config.rabbitMqUri);
-        this.channel = await this.connection.createChannel();
+    try {
+      const connection = await amqp.connect(config.rabbitMqUri);
+      this.channel = await connection.createChannel();
 
-        await this.channel.assertQueue(config.rabbitQueue);
+      await this.channel.assertQueue(config.rabbitQueue);
 
-        console.info("Connected to RabbitMQ");
-      } catch (err) {
-        console.error(`Failed to connect to RabbitMQ:`, err);
-      }
-    }, 20_000);
+      console.info("Connected to RabbitMQ");
+    } catch (err) {
+      console.error(`Failed to connect to RabbitMQ:`, err);
+    }
   }
 
   async publishMessage(queue, message) {
@@ -57,4 +54,4 @@ class MessageBroker {
   }
 }
 
-module.exports = { MessageBroker };
+module.exports = new MessageBroker();

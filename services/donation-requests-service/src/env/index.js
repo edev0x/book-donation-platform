@@ -22,14 +22,16 @@ const config = {
     url: process.env.DATABASE_URL || null,
     dialect: process.env.DATABASE_DIALECT || "postgres",
     schema: process.env.DATABASE_SCHEMA || "public",
+    logging: process.env.DATABASE_LOGGING === "true",
+    synchorize: process.env.DATABASE_SYNCHRONIZE === "true",
   },
   mqOptions: {
     durable: process.env.MQ_DURABLE === "true",
     persistent: process.env.MQ_PERSISTENT === "true",
-    autoDelete: process.env.MQ_AUTO_DELETE === "true",
+    autoDelete: process.env.MQ_AUTO_DELETE === "false",
     arguments: {
       "x-message-ttl": process.env.MQ_MESSAGE_TTL || 30000,
-      "x-max-length": process.env.MQ_MAX_LENGTH || 100_000,
+      "x-max-length": process.env.MQ_MAX_LENGTH || 20_000,
     }
   }
 };

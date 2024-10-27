@@ -2,35 +2,39 @@ require("reflect-metadata");
 const config = require("./env").config;
 const express = require("express");
 
-const { DataSource } = require("typeorm");
-const dataSourceConfig = require("./data/ormconfig").ormConfig;
-const AppDataSource = new DataSource(dataSourceConfig);
-
+const messageBroker = require("./utils/messageBroker");
 const appRouter = require("./routes/routes");
 
+const { appDataSource } = require("./data/connection");
+
 class AppBootstrap {
-  server = null;
-  app = null;
-  
+
   constructor() {
+    this.server = null;
     this.app = express();
+
+    // Initialize broker connection
+    this.setUpMessageBroker();
   }
 
   async start() {
-    AppDataSource.initialize().then(() => {
-      console.info("Database connection established successfully!");
-    }).catch((error) => {
+    try {
+      this.app.use(express.json());
+      this.app.use(express.urlencoded({ extended: false }));
+
+      this.app.use(config.contextPath, appRouter);
+      this.server = this.app.listen(config.port, () => {
+        console.info(`Server started on port ${config.port}`);
+      });
+
+    } catch (error) {
       console.error("Database connection failed!", error);
       process.exit(1);
-    });
+    }
+  }
 
-    this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: false }));
-    
-    this.app.use(config.contextPath, appRouter);
-    this.server = this.app.listen(config.port, () => {
-      console.info(`Server started on port ${config.port}`);
-    });
+  setUpMessageBroker() {
+    messageBroker.connect();
   }
 
   async stop() {
@@ -39,4 +43,4 @@ class AppBootstrap {
   }
 }
 
-module.exports = { AppBootstrap, AppDataSource };
+module.exports = { AppBootstrap };
