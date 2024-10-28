@@ -1,6 +1,5 @@
 const DonationRequest = require("../domain/models/DonationRequest");
 
-const serviceDataSource = require("../app");
 const { connectToDataSource } = require("../data/connection");
 
 class DonationRequestRepository {

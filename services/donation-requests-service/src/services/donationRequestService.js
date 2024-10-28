@@ -1,6 +1,6 @@
 const DonationsRequestsRepository = require("../repositories/donationRequestsRepository");
 
-const { rabbitQueue } = require("../env").config;
+const { publishQueue, consumerQueue } = require("../env").config;
 const messageBroker = require("../utils/messageBroker");
 
 /**
@@ -15,21 +15,44 @@ class DonationRequestService {
   async createDonationRequest(donationRequest) {
     // Publish the donation request to the message broker
     await messageBroker.publishMessage(
-      rabbitQueue,
+      publishQueue,
       JSON.stringify(donationRequest)
     );
 
     this.requestsMap.set(donationRequest.id, {
       ...donationRequest,
-      status: "PENDING",
+      state: "PENDIENTE"
     });
 
     // Save the donation request to the database
     const createdDonationRequest =
       await this.donationsRequestsRepository.create(donationRequest);
 
+    messageBroker.consume(consumerQueue, (data) => {
+      const parsedData = JSON.parse(JSON.stringify(data));
+
+      const { requestId } = parsedData;
+      const request = this.requestsMap.get(requestId);
+
+      if (request) {
+        this.requestsMap.set(requestId, {
+          ...request,
+          state: "COMPLETADA"
+        });
+
+        console.info(`Request ${requestId} has been completed`);
+      }
+    });
+
+    let request = this.requestsMap.get(donationRequest.id);
+    while(request.state !== "COMPLETADA") {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      request = this.requestsMap.get(donationRequest.id);
+    }
+
     // Once the donation request is completed, return the object
-    return { ...createdDonationRequest, status: "PENDING" };
+    return { ...createdDonationRequest };
   }
 
   async findDonationRequestById(id) {
