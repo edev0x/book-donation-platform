@@ -5,6 +5,8 @@ const express = require("express");
 const messageBroker = require("./utils/messageBroker");
 const appRouter = require("./routes/routes");
 
+const { appDataSource } = require("./data/connection");
+
 class AppBootstrap {
 
   constructor() {

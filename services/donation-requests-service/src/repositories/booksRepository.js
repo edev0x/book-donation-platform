@@ -1,5 +1,6 @@
-const Book = require("../domain/models/Book").Book;
-const { AppDataSource: appDataSource } = require("../app");
+const { appDataSource } = require("../data/connection");
+
+const Book = require("../domain/models/Book");
 
 class BooksRepository {
     constructor() {

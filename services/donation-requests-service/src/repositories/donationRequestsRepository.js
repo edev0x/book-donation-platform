@@ -1,9 +1,14 @@
-const DonationRequest = require("../domain/models/DonationRequest").DonationRequest;
-const { AppDataSource: appDataSource } = require("../app");
+const DonationRequest = require("../domain/models/DonationRequest");
+
+const { connectToDataSource } = require("../data/connection");
 
 class DonationRequestRepository {
+
+  repositoryDataSource = null;
+  repository = null;
+
   constructor() {
-    this.repository = appDataSource.getRepository(DonationRequest);
+    this.initialize();
   }
 
   async create(donationRequest) {
@@ -26,6 +31,11 @@ class DonationRequestRepository {
 
   async delete(id) {
     return await this.repository.delete(id);
+  }
+
+  async initialize() {
+    this.repositoryDataSource = await connectToDataSource();
+    this.repository = this.repositoryDataSource.getRepository(DonationRequest);
   }
 }
 

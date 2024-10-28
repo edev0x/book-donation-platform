@@ -1,16 +1,16 @@
 {
-  "name": "donation-requests-service",
+  "name": "books-catalog-service",
   "version": "1.0.0",
-  "description": "Microservice used to handle donation requests",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "@edev0x",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.10.4",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
@@ -19,9 +19,8 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.2",
-    "typedi": "^0.10.0",
-    "typeorm": "^0.3.6",
-    "uuid": "^10.0.0"
+    "typeorm": "^0.3.20",
+    "uuid": "^11.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

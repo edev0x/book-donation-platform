@@ -2,7 +2,6 @@ require("reflect-metadata");
 const config = require("./env").config;
 const express = require("express");
 
-const messageBroker = require("./utils/messageBroker");
 const appRouter = require("./routes/routes");
 
 class AppBootstrap {
@@ -10,9 +9,6 @@ class AppBootstrap {
   constructor() {
     this.server = null;
     this.app = express();
-
-    // Initialize broker connection
-    this.setUpMessageBroker();
   }
 
   async start() {
@@ -30,11 +26,7 @@ class AppBootstrap {
       process.exit(1);
     }
   }
-
-  setUpMessageBroker() {
-    messageBroker.connect();
-  }
-
+  
   async stop() {
     this.server.close();
     console.info(`Server stopped successfully!`);
