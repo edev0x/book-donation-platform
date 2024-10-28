@@ -10,7 +10,6 @@ const DonationRequestService = require("../services/donationRequestService");
 
 class DonationsRequestsController {
   constructor() {
-    this.donationRequestsMap = new Map();
     this.createDonationRequest = this.createDonationRequest.bind(this);
     this.donationRequestService = new DonationRequestService();
   }
@@ -33,23 +32,18 @@ class DonationsRequestsController {
         created_by
       );
 
-      const requestResult =
-        await this.donationRequestService.createDonationRequest(
-          donationRequest
-        );
+      const requestResult = await this.donationRequestService.createDonationRequest(donationRequest);
 
-      res
-        .status(201)
-        .json({
-          result: {
-            message: "Donation request created successfully",
-            code: 201,
-            data: { ...requestResult, status: "PENDING" },
-          },
-        });
+      res.status(201).json({
+        result: {
+          message: "Donation request created successfully",
+          code: 201,
+          data: { ...requestResult },
+        },
+      });
     } catch (error) {
       console.error(error);
-      res.status(500).send({ error: "Internal server error" });
+      res.status(500).send({ error: "An error ocurred while trying to process your request." });
     }
   }
 }
